@@ -1,0 +1,83 @@
+<!doctype html>
+
+<style type="text/css">
+    #container {
+        width: 75%;
+        margin: 0 auto;
+    }
+
+    #fitness_table tbody tr:hover {
+        background: yellow;
+    }
+
+    #fitness_table thead tr:hover {
+        background: inherit;
+    }
+</style>
+
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Fitness Table for Evolutionary Algorithms</title>
+
+        <!-- Include the CSS file required by the Foundation library -->
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/foundation/5.3.1/css/foundation.css" />
+        
+        <!-- Include the JS files required by the Foundation library -->
+        <script src="https://code.jquery.com/jquery-git2.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/foundation/5.3.1/js/foundation.min.js"></script>
+
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+        <script src="d3_fitness_table.js"></script>
+
+        <script>
+            // Generate some fake test data to populate the tables.
+            var generateData = function(num_ind, genome_len) {
+                var test_data = [];
+                for (var i = 1; i <= num_ind; ++i) {
+                    var test_ind = [];
+                    test_ind.push({val:i,visible:true});
+                    test_ind.push({val:Math.random()*i,visible:true});
+
+                    // Generate some genome elements.
+                    for (var j = 0; j < genome_len; ++j) {
+                        test_ind.push({val:Math.random()*5.0,visible:false});
+                    }
+                    test_data.push(test_ind);
+                }
+
+                return test_data;
+            }
+
+            var generateGenomeDescriptors = function(genome_len) {
+                var genome_descriptors = ["Oooga","Booga","Boogety"];
+                for (var i = 3; i < genome_len; ++i) {
+                    genome_descriptors.push(genome_descriptors[i % 3]);
+                }
+                return genome_descriptors
+            }
+
+            window.onload = function() {
+                var genome_len = 80;
+                D3_FitnessTable.table(genome_len);
+                var data = generateData(100,genome_len);
+                var genome_descriptors = generateGenomeDescriptors(genome_len);
+
+                for (var i = 0; i < data.length; ++i) {
+                    D3_FitnessTable.updateTable(data[i], genome_descriptors);
+                }
+
+                // Initialize the Foundation JS
+                $(document).foundation();
+            }
+        </script>
+    </head>
+    <body>
+        <div id="container">
+            <div id="fitness_table">
+
+            </div>
+        </div>
+  </body>
+</html>
