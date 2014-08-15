@@ -1,0 +1,76 @@
+<!doctype html>
+
+<style type="text/css">
+    #container {
+        width: 75%;
+        margin: 0 auto;
+        padding-top: 100px;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
+
+    .axis text {
+        font-family: sans-serif;
+        font-size: 11px;
+    }
+</style>
+
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Barchart for Evolutionary Algorithms</title>
+        
+        <!-- Include the JS files required by the Foundation library -->
+        <script src="https://code.jquery.com/jquery-git2.min.js"></script>
+
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+        <script src="d3_pop_barchart.js"></script>
+
+        <script>
+            // Generate a fake fitness value to input to the barchart.
+            var generateData = function(ind_number) {
+                return Math.random();
+            }
+
+            window.onload = function() {
+                var pop_size = 20;
+                var ind_duration = 500;
+                var ind_intervals = 10;
+                D3_Plotter.populationBarchart(pop_size);
+
+                (function addData (i) { 
+                    var fitness_val = generateData(pop_size-i);   
+                    console.log(fitness_val);      
+                    setTimeout(function () {   
+                        (function animateDataEntry(j) {
+                            setTimeout(function () {
+                                var data_to_remove = null;
+                                if ( j != ind_intervals ) {
+                                    data_to_remove = [[pop_size-i,(fitness_val/ind_intervals)*(ind_intervals-(j+1)),0]];
+                                }
+                                D3_Plotter.updatePopulationBarchart(
+                                    [[pop_size-i,(fitness_val/ind_intervals)*(ind_intervals-j),0]],
+                                    data_to_remove);        
+                                if (--j) animateDataEntry(j);
+                            }, ind_duration/ind_intervals)
+                        })(ind_intervals);
+                        if (--i) addData(i);
+                    }, ind_duration)
+                })(pop_size);
+            }
+        </script>
+    </head>
+    <body>
+        <div id="container">
+            <div id="pop-barchart-div">
+
+            </div>
+        </div>
+  </body>
+</html>
